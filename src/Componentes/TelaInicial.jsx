@@ -1,12 +1,35 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 
-function TelaInicial() {
+function TelaInicial(props) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
+  const navigate = useNavigate();
+
+  const {salvarToken} = props
+
   function fazerLogin(event) {
     event.preventDefault();
+
+    const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
+    const promisse = axios.post(URL,{
+        email,
+        password: senha
+    });
+
+    promisse.then((response) => {
+      const { data } = response;
+      salvarToken(data.token)
+      navigate('/hoje')
+    });
+
+    promisse.catch((err) => {
+      console.log(err);
+      alert("oi");
+    });
   }
 
   return (
@@ -64,7 +87,9 @@ function TelaInicial() {
             onChange={(e) => setSenha(e.target.value)}
           />
           <Botao type="submit">Entrar</Botao>
-          <Texto>Não tem uma conta? Cadastre-se!</Texto>
+          <Texto>
+            <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
+          </Texto>
         </Formulario>
       </Container>
     </>
