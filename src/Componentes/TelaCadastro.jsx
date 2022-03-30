@@ -1,5 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
 function TelaCadastro() {
   const [email, setEmail] = useState("");
@@ -7,8 +9,27 @@ function TelaCadastro() {
   const [nome, setNome] = useState("");
   const [img, setImg] = useState("");
 
-  function fazerLogin(event) {
+  const navigate = useNavigate();
+
+  function cadastrar(event) {
     event.preventDefault();
+
+    const URL =
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
+
+    const promise = axios.post(URL, {
+      email: email,
+      name: nome,
+      image: img,
+      password: senha,
+    });
+
+    promise.then((response) => {
+      const { data } = { response };
+      console.log(data);
+      navigate('/')
+    });
+    promise.catch((err) => console.log(err.response));
   }
 
   return (
@@ -50,7 +71,7 @@ function TelaCadastro() {
           />
         </Logo>
 
-        <Formulario onSubmit={fazerLogin}>
+        <Formulario onSubmit={cadastrar}>
           <Input
             type="email"
             placeholder="Email"
@@ -65,22 +86,24 @@ function TelaCadastro() {
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
           />
-           <Input
+          <Input
             type="text"
             placeholder="Nome"
             required
             value={nome}
             onChange={(e) => setNome(e.target.value)}
           />
-           <Input
+          <Input
             type="text"
-            placeholder="Senha"
+            placeholder="Imagem"
             required
             value={img}
             onChange={(e) => setImg(e.target.value)}
           />
           <Botao type="submit">Entrar</Botao>
-          <Texto>Não tem uma conta? Cadastre-se!</Texto>
+          <Texto>
+            <Link to="/">Já tem uma conta? Faça login!</Link>
+          </Texto>
         </Formulario>
       </Container>
     </>
