@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
+import { ThreeDots } from 'react-loader-spinner';
 
 function TelaInicial(props) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -13,6 +15,7 @@ function TelaInicial(props) {
 
   function fazerLogin(event) {
     event.preventDefault();
+    setLoading(true);
 
     const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
     const promisse = axios.post(URL,{
@@ -28,7 +31,8 @@ function TelaInicial(props) {
 
     promisse.catch((err) => {
       console.log(err);
-      alert("oi");
+      alert("falha no login, tente novamente ou cadastre-se");
+      setLoading(false);
     });
   }
 
@@ -78,6 +82,7 @@ function TelaInicial(props) {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading ? true : false}
           />
           <Input
             type="password"
@@ -85,8 +90,13 @@ function TelaInicial(props) {
             required
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
+            disabled={loading ? true : false}
           />
-          <Botao type="submit">Entrar</Botao>
+          <Botao type="submit"> {loading ? (
+                        <ThreeDots color="#fff" height={13} />
+                    ) : (
+                        'Entrar'
+                    )}</Botao>
           <Texto>
             <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
           </Texto>
@@ -142,6 +152,9 @@ const Botao = styled.button`
   font-size: 20px;
   color: #fff;
   margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const Texto = styled.p`
   font-family: "Lexend Deca", sans-serif;

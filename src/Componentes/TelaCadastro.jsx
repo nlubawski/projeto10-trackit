@@ -2,17 +2,20 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { ThreeDots } from 'react-loader-spinner';
 
 function TelaCadastro() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [img, setImg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   function cadastrar(event) {
     event.preventDefault();
+    setLoading(true);
 
     const URL =
       "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
@@ -29,7 +32,10 @@ function TelaCadastro() {
       console.log(data);
       navigate('/')
     });
-    promise.catch((err) => console.log(err.response));
+    promise.catch((err) => {
+      console.log(err.response)
+      setLoading(false)
+    });
   }
 
   return (
@@ -78,6 +84,7 @@ function TelaCadastro() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading ? true : false}
           />
           <Input
             type="password"
@@ -85,6 +92,7 @@ function TelaCadastro() {
             required
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
+            disabled={loading ? true : false}
           />
           <Input
             type="text"
@@ -92,6 +100,7 @@ function TelaCadastro() {
             required
             value={nome}
             onChange={(e) => setNome(e.target.value)}
+            disabled={loading ? true : false}
           />
           <Input
             type="text"
@@ -99,8 +108,11 @@ function TelaCadastro() {
             required
             value={img}
             onChange={(e) => setImg(e.target.value)}
+            disabled={loading ? true : false}
           />
-          <Botao type="submit">Entrar</Botao>
+          <Botao type="submit">
+         {loading ? <ThreeDots color="#fff" /> : 'Cadastrar'}
+          </Botao>
           <Texto>
             <Link to="/">Já tem uma conta? Faça login!</Link>
           </Texto>
@@ -156,6 +168,9 @@ const Botao = styled.button`
   font-size: 20px;
   color: #fff;
   margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const Texto = styled.p`
   font-family: "Lexend Deca", sans-serif;
