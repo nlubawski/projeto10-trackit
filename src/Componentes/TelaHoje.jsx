@@ -1,14 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext} from "react";
 import axios from "axios";
 import styled from "styled-components";
 
-function TelaHoje({ token }) {
+import UsuarioContext from './contextos/UsuarioContext'
+
+function TelaHoje() {
   const [habitos, setHabitos] = useState([]);
+
+  const {usuario} = useContext(UsuarioContext)
+  console.log('usuario', usuario)
 
   useEffect(() => {
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${usuario}`,
       },
     };
     const URL =

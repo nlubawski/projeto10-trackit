@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { ThreeDots } from 'react-loader-spinner';
+import UsuarioContext from './contextos/UsuarioContext'
 
 function TelaInicial(props) {
+ 
+  const {usuario,setUsuario} = useContext(UsuarioContext)
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  const {salvarToken} = props
 
   function fazerLogin(event) {
     event.preventDefault();
@@ -25,7 +26,9 @@ function TelaInicial(props) {
 
     promisse.then((response) => {
       const { data } = response;
-      salvarToken(data.token)
+      setUsuario(data.token)
+      // console.log('dados', data)
+      // console.log("usuario", usuario)
       navigate('/hoje')
     });
 

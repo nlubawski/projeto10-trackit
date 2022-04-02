@@ -1,8 +1,10 @@
-import { useState } from "react";
+
+import { useState} from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { ThreeDots } from 'react-loader-spinner';
+
 
 function TelaCadastro() {
   const [email, setEmail] = useState("");
