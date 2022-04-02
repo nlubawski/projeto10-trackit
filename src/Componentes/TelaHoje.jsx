@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext} from "react";
 import axios from "axios";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 import UsuarioContext from './contextos/UsuarioContext'
 
@@ -76,7 +77,8 @@ function TelaHoje() {
           </Item>
         </Tarefas>
         <BarraInferior>
-          <p>Hábitos</p>
+          <Link to="/habitos"><p>Hábitos</p></Link>
+          
           <p>Hoje</p>
           <p>Histórico</p>
         </BarraInferior>

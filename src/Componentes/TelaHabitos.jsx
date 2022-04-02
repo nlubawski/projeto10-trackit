@@ -1,7 +1,45 @@
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
+import { AiFillPlusSquare } from "react-icons/ai";
+import { TrashFill } from "@styled-icons/bootstrap/TrashFill";
+import UsuarioContext from "./contextos/UsuarioContext";
+import axios from "axios";
 
 function TelaHabitos() {
-  return (
+  const [habitos, setHabitos] = useState([]);
+
+  const { usuario } = useContext(UsuarioContext);
+  console.log("usuario", usuario);
+
+  useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${usuario}`,
+      },
+    };
+    const URL =
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits";
+
+    const promisse = axios.get(URL, config);
+
+    promisse.then((response) => {
+      console.log("response", response);
+      console.log("data", response.data);
+      const { data } = response;
+      console.log("sucesso");
+      console.log(data);
+      setHabitos(data);
+    });
+
+    promisse.catch((err) => {
+      console.log(err.response);
+      console.log("fracasso");
+    });
+  }, []);
+
+  console.log('habitos', habitos);
+ return (
+  (habitos.length === 0) ? (
     <>
       <Container>
         <BarraTopo>
@@ -13,15 +51,7 @@ function TelaHabitos() {
         </BarraTopo>
         <Titulo>
           <h1>Meus Hábitos</h1>
-          <Adicionar
-            width="40"
-            height="35"
-            viewBox="0 0 40 35"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="40" height="35" rx="4.63636" fill="#52B6FF" />
-          </Adicionar>
+          <AiFillPlusSquare size={30} color={"blue"} />
         </Titulo>
         <Tarefas>
           <Item>
@@ -31,22 +61,9 @@ function TelaHabitos() {
                 <div>D S T Q Q S S</div>
               </Descricao>
             </Info>
-            <Icone
-              width="13"
-              height="15"
-              viewBox="0 0 13 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M13 3C13 3.26522 12.8946 3.51957 12.7071 3.70711C12.5196 3.89464 12.2652 4 12 4H11.5V13C11.5 13.5304 11.2893 14.0391 10.9142 14.4142C10.5391 14.7893 10.0304 15 9.5 15H3.5C2.96957 15 2.46086 14.7893 2.08579 14.4142C1.71071 14.0391 1.5 13.5304 1.5 13V4H1C0.734784 4 0.48043 3.89464 0.292893 3.70711C0.105357 3.51957 0 3.26522 0 3V2C0 1.73478 0.105357 1.48043 0.292893 1.29289C0.48043 1.10536 0.734784 1 1 1H4.5C4.5 0.734784 4.60536 0.48043 4.79289 0.292893C4.98043 0.105357 5.23478 0 5.5 0L7.5 0C7.76522 0 8.01957 0.105357 8.20711 0.292893C8.39464 0.48043 8.5 0.734784 8.5 1H12C12.2652 1 12.5196 1.10536 12.7071 1.29289C12.8946 1.48043 13 1.73478 13 2V3ZM2.618 4L2.5 4.059V13C2.5 13.2652 2.60536 13.5196 2.79289 13.7071C2.98043 13.8946 3.23478 14 3.5 14H9.5C9.76522 14 10.0196 13.8946 10.2071 13.7071C10.3946 13.5196 10.5 13.2652 10.5 13V4.059L10.382 4H2.618ZM1 3V2H12V3H1Z"
-                fill="#666666"
-              />
-            </Icone>
-          </Item>
 
+            <TrashFill size={22} color={"grey"} />
+          </Item>
           <Item>
             <Info>
               <Descricao>
@@ -54,22 +71,32 @@ function TelaHabitos() {
                 <div>D S T Q Q S S</div>
               </Descricao>
             </Info>
-            <Icone
-              width="13"
-              height="15"
-              viewBox="0 0 13 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M13 3C13 3.26522 12.8946 3.51957 12.7071 3.70711C12.5196 3.89464 12.2652 4 12 4H11.5V13C11.5 13.5304 11.2893 14.0391 10.9142 14.4142C10.5391 14.7893 10.0304 15 9.5 15H3.5C2.96957 15 2.46086 14.7893 2.08579 14.4142C1.71071 14.0391 1.5 13.5304 1.5 13V4H1C0.734784 4 0.48043 3.89464 0.292893 3.70711C0.105357 3.51957 0 3.26522 0 3V2C0 1.73478 0.105357 1.48043 0.292893 1.29289C0.48043 1.10536 0.734784 1 1 1H4.5C4.5 0.734784 4.60536 0.48043 4.79289 0.292893C4.98043 0.105357 5.23478 0 5.5 0L7.5 0C7.76522 0 8.01957 0.105357 8.20711 0.292893C8.39464 0.48043 8.5 0.734784 8.5 1H12C12.2652 1 12.5196 1.10536 12.7071 1.29289C12.8946 1.48043 13 1.73478 13 2V3ZM2.618 4L2.5 4.059V13C2.5 13.2652 2.60536 13.5196 2.79289 13.7071C2.98043 13.8946 3.23478 14 3.5 14H9.5C9.76522 14 10.0196 13.8946 10.2071 13.7071C10.3946 13.5196 10.5 13.2652 10.5 13V4.059L10.382 4H2.618ZM1 3V2H12V3H1Z"
-                fill="#666666"
-              />
-            </Icone>
+
+            <TrashFill size={22} color={"grey"} />
           </Item>
         </Tarefas>
+        <BarraInferior>
+          <p>Hábitos</p>
+          <p>Hoje</p>
+          <p>Histórico</p>
+        </BarraInferior>
+      </Container>
+    </>
+  ) : 
+   (
+    <>
+      <Container>
+        <BarraTopo>
+          <p>TrackIt</p>
+          <Foto
+            src="https://tm.ibxk.com.br/2021/11/11/11185008794612.jpg?ims=704x264"
+            alt="kakashi"
+          />
+        </BarraTopo>
+        <Titulo>
+          <h1>Meus Hábitos</h1>
+          <AiFillPlusSquare size={30} color={"blue"} />
+        </Titulo>
         <Tarefas>
           <SemHabitos>
             <Mensagem>
@@ -87,8 +114,10 @@ function TelaHabitos() {
         </BarraInferior>
       </Container>
     </>
-  );
-}
+  )
+)
+
+   }
 
 const Container = styled.div`
   min-height: 100vh;
@@ -135,8 +164,6 @@ const Titulo = styled.section`
     padding-bottom: 5px;
   }
 `;
-
-const Adicionar = styled.svg``;
 
 const Tarefas = styled.section`
   margin-top: 50px;
@@ -196,7 +223,6 @@ const CaixaIcone = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const Icone = styled.svg``;
 
 const SemHabitos = styled.section`
   margin-top: 50px;
