@@ -7,9 +7,8 @@ import UsuarioContext from './contextos/UsuarioContext'
 
 function TelaHoje() {
   const [habitos, setHabitos] = useState([]);
-
   const {usuario} = useContext(UsuarioContext)
-  console.log('usuario', usuario)
+  const {imagem} = useContext(UsuarioContext)
 
   useEffect(() => {
     const config = {
@@ -23,11 +22,7 @@ function TelaHoje() {
     const promisse = axios.get(URL, config);
 
     promisse.then((response) => {
-      console.log("response", response);
-      console.log("data", response.data);
       const { data } = response;
-      console.log("sucesso");
-      console.log(data);
       setHabitos(data);
     });
 
@@ -37,16 +32,14 @@ function TelaHoje() {
     });
   }, []);
 
-  console.log(habitos);
-
   return (
     <>
       <Container>
         <BarraTopo>
           <p>TrackIt</p>
           <Foto
-            src="https://tm.ibxk.com.br/2021/11/11/11185008794612.jpg?ims=704x264"
-            alt="kakashi"
+            src={imagem}
+            alt={imagem}
           />
         </BarraTopo>
         <Dia>

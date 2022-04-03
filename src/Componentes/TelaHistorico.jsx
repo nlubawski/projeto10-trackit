@@ -1,15 +1,18 @@
+import {useContext} from 'react'
 import styled from "styled-components";
 import {Link} from 'react-router-dom'
+import UsuarioContext from './contextos/UsuarioContext'
 
 function TelaHistorico() {
+  const {imagem} = useContext(UsuarioContext)
   return (
     <>
       <Container>
         <BarraTopo>
           <p>TrackIt</p>
           <Foto
-            src="https://tm.ibxk.com.br/2021/11/11/11185008794612.jpg?ims=704x264"
-            alt="kakashi"
+            src= {imagem}
+            alt={imagem}
           />
         </BarraTopo>
         <Titulo>

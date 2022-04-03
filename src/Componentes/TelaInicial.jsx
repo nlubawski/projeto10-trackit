@@ -5,9 +5,9 @@ import styled from "styled-components";
 import { ThreeDots } from 'react-loader-spinner';
 import UsuarioContext from './contextos/UsuarioContext'
 
-function TelaInicial(props) {
+function TelaInicial() {
  
-  const {setUsuario} = useContext(UsuarioContext)
+  const {setUsuario,setImagem} = useContext(UsuarioContext)
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,8 +27,7 @@ function TelaInicial(props) {
     promisse.then((response) => {
       const { data } = response;
       setUsuario(data.token)
-      // console.log('dados', data)
-      // console.log("usuario", usuario)
+      setImagem(data.image) 
       navigate('/hoje')
     });
 
