@@ -7,7 +7,7 @@ import UsuarioContext from './contextos/UsuarioContext'
 
 function TelaInicial(props) {
  
-  const {usuario,setUsuario} = useContext(UsuarioContext)
+  const {setUsuario} = useContext(UsuarioContext)
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
