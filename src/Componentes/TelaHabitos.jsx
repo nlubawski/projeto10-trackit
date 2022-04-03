@@ -5,19 +5,19 @@ import { TrashFill } from "@styled-icons/bootstrap/TrashFill";
 import UsuarioContext from "./contextos/UsuarioContext";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
+import {useNavigate} from 'react-router-dom'
 
 function TelaHabitos() {
   const [habitos, setHabitos] = useState([]);
-
   const [novoHabito, setNovoHabito] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nomeHabito, setNomeHabito] = useState("");
   const [selecionado, setSelecionado] = useState([]);
-
+  const [atualiza, setAtualiza] = useState(false)
   const { usuario } = useContext(UsuarioContext);
-  console.log("usuario", usuario);
 
-  useEffect(() => {
+
+  function buscarHabitos(){
     const config = {
       headers: {
         Authorization: `Bearer ${usuario}`,
@@ -41,7 +41,11 @@ function TelaHabitos() {
       console.log(err.response);
       console.log("fracasso");
     });
-  }, []);
+  }
+
+  useEffect(() => {
+    buscarHabitos()}, [] );
+ 
 
   function criarHabito() {
     setNovoHabito(!novoHabito);
@@ -63,30 +67,42 @@ function TelaHabitos() {
 
   console.log("selecionado", selecionado);
 
-  // function salvarHabito(event) {
-  //   event.preventDefault();
-  //   setLoading(true);
+  function salvarHabito(event) {
+    event.preventDefault();
+    setLoading(true);
 
-  //   const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
-  //   const promisse = axios.post(URL,{
-  //       email,
-  //       password: senha
-  //   });
+    const config = {
+      headers: {
+        Authorization: `Bearer ${usuario}`,
+      },
+    };
 
-  //   promisse.then((response) => {
-  //     const { data } = response;
-  //     setUsuario(data.token)
-  //     // console.log('dados', data)
-  //     // console.log("usuario", usuario)
-  //     navigate('/hoje')
-  //   });
+    const URL =
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits";
+    const promisse = axios.post(
+      URL,
+      {
+        name: nomeHabito,
+        days: selecionado,
+      },
+      config
+    );
 
-  //   promisse.catch((err) => {
-  //     console.log(err);
-  //     alert("falha no login, tente novamente ou cadastre-se");
-  //     setLoading(false);
-  //   });
-  // }
+    promisse.then((response) => {
+      console.log("resposta", response.data);
+      console.log("salvou o habito");
+      setLoading(false);
+      criarHabito()
+      buscarHabitos()
+      
+    });
+
+    promisse.catch((err) => {
+      console.log("erro", err);
+      alert("errou pra salvar");
+      setLoading(false);
+    });
+  }
 
   const dias = {
     0: "D",
@@ -98,23 +114,54 @@ function TelaHabitos() {
     6: "S",
   };
 
-  function listaDias(){
+  function listaDias() {
     let lista = [];
-  for (let i = 0; i < 7; i++) {
-    selecionado.indexOf(i)
-      ? lista.push(
-          <Dia key={i}  onClick={() => selecionar(i)}>
-            {dias.i}
-          </Dia>
-        )
-      : lista.push(
-          <Dia key={i} onClick={() => selecionar(i)}>
-            {dias.i}
-          </Dia>
-        );
+    for (let i = 0; i < 7; i++) {
+      selecionado.indexOf(i)
+        ? lista.push(
+            <Dia key={i} onClick={() => selecionar(i)}>
+              {dias.i}
+            </Dia>
+          )
+        : lista.push(
+            <Dia key={i} onClick={() => selecionar(i)}>
+              {dias.i}
+            </Dia>
+          );
+    }
+    return lista.sort();
   }
-  return lista.sort()
+
+  function apagarHabito(item) {
+    let confirmacao = prompt("Quer mesmo apagar esse hábito? Digite Sim ");
+    if (confirmacao.toLowerCase() === "sim") {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${usuario}`,
+        },
+      };
+
+      const URL =
+        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item}`;
+      const promisse = axios.delete(URL,config);
+
+      promisse.then((response) => {
+        console.log("resposta", response.data);
+        console.log("apaggou o habito");
+        buscarHabitos()
+
+      });
+
+      promisse.catch((err) => {
+        console.log("erro", err);
+        alert("errou pra apagar");
+      });
+    }
   }
+
+  console.log("habitis", habitos);
+
+  console.log("habitis", habitos);
   return habitos.length !== 0 ? (
     <>
       <Container>
@@ -129,27 +176,57 @@ function TelaHabitos() {
           <h1>Meus Hábitos</h1>
           <AiFillPlusSquare size={30} color={"blue"} onClick={criarHabito} />
         </Titulo>
+        {console.log('to aqui',habitos.length)}
         <Tarefas>
-          <Item>
-            <Info>
-              <Descricao>
-                <h1>Ler 1 capítulo de livro</h1>
-                <div>D S T Q Q S S</div>
-              </Descricao>
-            </Info>
+        {novoHabito ? (
+              <Cadastrar>
+                <Formulario onSubmit={salvarHabito}>
+                  <Input
+                    type="text"
+                    placeholder="Nome do Hábito"
+                    required
+                    value={nomeHabito}
+                    onChange={(e) => setNomeHabito(e.target.value)}
+                    disabled={loading ? true : false}
+                  />
+                  <Dias>{listaDias().map((item) => item)}</Dias>
+                  <Botoes>
+                    <Cancelar onClick={criarHabito}>Cancelar</Cancelar>
+                    <Salvar type="submit">
+                      {" "}
+                      {loading ? (
+                        <ThreeDots color="#fff" height={13} />
+                      ) : (
+                        "Salvar"
+                      )}
+                    </Salvar>
+                  </Botoes>
+                </Formulario>
+              </Cadastrar>
+            ) : (
+              <></>
+            )}
+          {habitos.length ? 
+          
+          habitos.map((item) => {
+            console.log('to aqui',habitos.length)
+            return (
+              <Item>
+                <Info>
+                  <Descricao>
+                    <h1>{item.name}</h1>
+                  </Descricao>
+                </Info>
 
-            <TrashFill size={22} color={"grey"} />
-          </Item>
-          <Item>
-            <Info>
-              <Descricao>
-                <h1>Ler 1 capítulo de livro</h1>
-                <div>D S T Q Q S S</div>
-              </Descricao>
-            </Info>
-
-            <TrashFill size={22} color={"grey"} />
-          </Item>
+                <TrashFill
+                  onClick={() => apagarHabito(item.id)}
+                  size={22}
+                  color={"grey"}
+                />
+              </Item>
+            );
+          }): 
+          <></>}
         </Tarefas>
         <BarraInferior>
           <p>Hábitos</p>
@@ -176,8 +253,7 @@ function TelaHabitos() {
           <SemHabitos>
             {novoHabito ? (
               <Cadastrar>
-                {/* <Formulario onSubmit={salvarHabito}> */}
-                <Formulario>
+                <Formulario onSubmit={salvarHabito}>
                   <Input
                     type="text"
                     placeholder="Nome do Hábito"
@@ -186,11 +262,7 @@ function TelaHabitos() {
                     onChange={(e) => setNomeHabito(e.target.value)}
                     disabled={loading ? true : false}
                   />
-                  <Dias>
-                    {
-                      listaDias().map(item => item)
-                    }
-                  </Dias>
+                  <Dias>{listaDias().map((item) => item)}</Dias>
                   <Botoes>
                     <Cancelar onClick={criarHabito}>Cancelar</Cancelar>
                     <Salvar type="submit">
@@ -263,7 +335,7 @@ const Titulo = styled.section`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  margin-bottom: 28px;
   h1 {
     font-size: 23px;
     color: #126ba5;
@@ -330,7 +402,6 @@ const CaixaIcone = styled.div`
 `;
 
 const SemHabitos = styled.section`
-  margin-top: 50px;
   margin-left: 18px;
   margin-right: 18px;
 `;
@@ -340,7 +411,7 @@ const Mensagem = styled.article`
   padding-right: 12px;
   background-color: #fff;
   width: 100%;
-  height: 94px;
+  height: 74px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -348,9 +419,6 @@ const Mensagem = styled.article`
   background-color: #e5e5e5;
 
   p {
-    width: 100%;
-    height: 74px;
-
     font-family: "Lexend Deca";
     font-weight: 400;
     font-size: 18px;
@@ -448,9 +516,7 @@ const Dia = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 4px;
-
-  `;
-
+`;
 
 const Salvar = styled.button`
   height: 35px;
