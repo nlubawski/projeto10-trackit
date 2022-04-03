@@ -5,7 +5,7 @@ import { TrashFill } from "@styled-icons/bootstrap/TrashFill";
 import UsuarioContext from "./contextos/UsuarioContext";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
-import {useNavigate} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 function TelaHabitos() {
   const [habitos, setHabitos] = useState([]);
@@ -229,9 +229,9 @@ function TelaHabitos() {
           <></>}
         </Tarefas>
         <BarraInferior>
-          <p>Hábitos</p>
-          <p>Hoje</p>
-          <p>Histórico</p>
+        <Link to="/habitos"><p>Hábitos</p></Link>
+          <Link to="/hoje"><p>Hoje</p></Link>
+          <Link to="/historico"><p>Histórico</p></Link>
         </BarraInferior>
       </Container>
     </>

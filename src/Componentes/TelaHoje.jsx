@@ -78,9 +78,8 @@ function TelaHoje() {
         </Tarefas>
         <BarraInferior>
           <Link to="/habitos"><p>Hábitos</p></Link>
-          
-          <p>Hoje</p>
-          <p>Histórico</p>
+          <Link to="/hoje"><p>Hoje</p></Link>
+          <Link to="/historico"><p>Histórico</p></Link>
         </BarraInferior>
       </Container>
     </>

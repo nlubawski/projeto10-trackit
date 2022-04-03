@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {Link} from 'react-router-dom'
 
 function TelaHistorico() {
   return (
@@ -24,9 +25,9 @@ function TelaHistorico() {
         </SemHabitos>
 
         <BarraInferior>
-          <p>Hábitos</p>
-          <p>Hoje</p>
-          <p>Histórico</p>
+        <Link to="/habitos"><p>Hábitos</p></Link>
+          <Link to="/hoje"><p>Hoje</p></Link>
+          <Link to="/historico"><p>Histórico</p></Link>
         </BarraInferior>
       </Container>
     </>
