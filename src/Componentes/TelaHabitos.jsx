@@ -196,6 +196,22 @@ function TelaHabitos() {
                   <Info>
                     <Descricao>
                       <h1>{item.name}</h1>
+                      <Dias>
+                  {listaDias.map((item) => {
+                    return selecionado.includes(item) ? (
+                      <Dia selecionado key={item} onClick={() => {
+                        selecionar(item)
+                      }}>
+                        {dias[item]}
+                      </Dia>
+                    ) : (
+                      <Dia key={item}  onClick={() => selecionar(item)}>
+                        {dias[item]}
+                      </Dia>
+                    );
+                  })}      
+                  </Dias>
+                      
                     </Descricao>
                   </Info>
 
@@ -249,21 +265,19 @@ function TelaHabitos() {
                     disabled={loading ? true : false}
                   />
                   <Dias>
-                    
-                  {/* {listaDias.map((item) => {
-                    console.log('dias item', dias[item])
-                    return selecionado.indexOf(item) ? (
-                      <Dia key={item} back={true} onClick={() => selecionar(item)}>
+                  {listaDias.map((item) => {
+                    return selecionado.includes(item) ? (
+                      <Dia selecionado key={item} onClick={() => {
+                        selecionar(item)
+                      }}>
                         {dias[item]}
                       </Dia>
                     ) : (
-                      <Dia key={item} back={false} onClick={() => selecionar(item)}>
+                      <Dia key={item}  onClick={() => selecionar(item)}>
                         {dias[item]}
                       </Dia>
                     );
-                  })} */}
-                  
-                  
+                  })}      
                   </Dias>
                   <Botoes>
                     <Cancelar onClick={criarHabito}>Cancelar</Cancelar>
@@ -520,7 +534,6 @@ const Dia = styled.div`
   margin-right: 4px;
   background-color: ${props => props.selecionado ? "#00ff00" :"#ff4400"};  
   ` ;
-
 
 const Salvar = styled.button`
   height: 35px;

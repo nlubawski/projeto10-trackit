@@ -103,7 +103,7 @@ function TelaHoje() {
           {habitosHoje.length !== 0 ? (
             habitosHoje.map((item) => {
               return item.done === true ? (
-                <Item key={item.id} onClick={() => desmarcarHabito(item.id)}>
+                <Item key={item.id} selecionado onClick={() => desmarcarHabito(item.id)}>
                   <Info>
                     <h1>{item.name}</h1>
                     <p>Sequência atual: {item.currentSequence} dias</p>
@@ -204,7 +204,6 @@ const Tarefas = styled.section`
 
 const Item = styled.article`
   padding: 12px;
-  background-color: #fff;
   width: 100%;
   height: 94px;
   display: flex;
@@ -212,6 +211,7 @@ const Item = styled.article`
   justify-content: space-between;
   margin-bottom: 10px;
   border-radius: 5px;
+  background-color: "#fff";  
 `;
 
 const Info = styled.div`
@@ -235,14 +235,13 @@ const Info = styled.div`
 const CaixaIcone = styled.div`
   width: 69px;
   height: 60px;
-  background-color: #ebebeb;
+  background-color: ${props => props.selecionado ? "#00ff00" :"#fff"};  
   border: 1px solid #e7e7e7;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const Icone = styled.svg``;
 
 const BarraInferior = styled.footer`
   box-sizing: border-box;
