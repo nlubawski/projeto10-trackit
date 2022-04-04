@@ -13,7 +13,7 @@ function TelaHoje() {
   let hoje = parseInt(dayjs().format("d"));
   const [habitosHoje, setHabitosHoje] = useState([]);
 
-  function buscarHabitoHoje(){
+  function buscarHabitoHoje() {
     const config = {
       headers: {
         Authorization: `Bearer ${usuario}`,
@@ -37,11 +37,10 @@ function TelaHoje() {
   }
 
   useEffect(() => {
-    buscarHabitoHoje()
+    buscarHabitoHoje();
   }, []);
 
   function marcarHabito(id) {
-    console.log("marcar habito id", id);
     const config = {
       headers: {
         Authorization: `Bearer ${usuario}`,
@@ -52,7 +51,7 @@ function TelaHoje() {
     const promisse = axios.post(URL, null, config);
 
     promisse.then((response) => {
-      console.log("resposta", response.data);
+      buscarHabitoHoje();
       console.log("marcou o habito");
     });
 
@@ -75,15 +74,35 @@ function TelaHoje() {
 
     promisse.then((response) => {
       console.log("resposta", response);
-      console.log("desmarcou o habito");
-      buscarHabitoHoje()
+      buscarHabitoHoje();
     });
 
     promisse.catch((err) => {
       console.log("erro", err);
       console.log("erroooo", err.response);
-      buscarHabitoHoje()
+      buscarHabitoHoje();
     });
+  }
+
+  function nomeDoDia(diaHoje) {
+    switch (diaHoje) {
+      case 0:
+        return "Domingo";
+      case 1:
+        return "Segunda";
+      case 2:
+        return "Terça";
+      case 3:
+        return "Quarta";
+      case 4:
+        return "Quinta";
+      case 5:
+        return "Sexta";
+      case 6:
+        return "Sábado";
+      default:
+        return "";
+    }
   }
 
   return (
@@ -95,7 +114,7 @@ function TelaHoje() {
         </BarraTopo>
         <Dia>
           <h1>
-            {hoje}, {dayjs().format("DD/MM")}
+            {nomeDoDia(hoje)}, {dayjs().format("DD/MM")}
           </h1>
           <p>Nenhum hábito concluído ainda</p>
         </Dia>
@@ -103,7 +122,11 @@ function TelaHoje() {
           {habitosHoje.length !== 0 ? (
             habitosHoje.map((item) => {
               return item.done === true ? (
-                <Item key={item.id} selecionado onClick={() => desmarcarHabito(item.id)}>
+                <Item
+                  key={item.id}
+                  selecionado
+                  onClick={() => desmarcarHabito(item.id)}
+                >
                   <Info>
                     <h1>{item.name}</h1>
                     <p>Sequência atual: {item.currentSequence} dias</p>
@@ -211,7 +234,7 @@ const Item = styled.article`
   justify-content: space-between;
   margin-bottom: 10px;
   border-radius: 5px;
-  background-color: "#fff";  
+  background-color: "#fff";
 `;
 
 const Info = styled.div`
@@ -235,7 +258,7 @@ const Info = styled.div`
 const CaixaIcone = styled.div`
   width: 69px;
   height: 60px;
-  background-color: ${props => props.selecionado ? "#00ff00" :"#fff"};  
+  background-color: ${(props) => (props.selecionado ? "#00ff00" : "#fff")};
   border: 1px solid #e7e7e7;
   border-radius: 5px;
   display: flex;

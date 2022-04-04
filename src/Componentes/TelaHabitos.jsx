@@ -304,9 +304,15 @@ function TelaHabitos() {
           </SemHabitos>
         </Tarefas>
         <BarraInferior>
-          <p>Hábitos</p>
-          <p>Hoje</p>
-          <p>Histórico</p>
+        <Link to="/habitos">
+            <p>Hábitos</p>
+          </Link>
+          <Link to="/hoje">
+            <p>Hoje</p>
+          </Link>
+          <Link to="/historico">
+            <p>Histórico</p>
+          </Link>
         </BarraInferior>
       </Container>
     </>
@@ -404,17 +410,6 @@ const Info = styled.div`
     color: #666;
     padding-bottom: 5px;
   }
-`;
-
-const CaixaIcone = styled.div`
-  width: 69px;
-  height: 60px;
-  background-color: #ebebeb;
-  border: 1px solid #e7e7e7;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const SemHabitos = styled.section`

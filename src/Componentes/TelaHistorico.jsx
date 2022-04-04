@@ -1,10 +1,42 @@
-import {useContext} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import styled from "styled-components";
 import {Link} from 'react-router-dom'
 import UsuarioContext from './contextos/UsuarioContext'
+import axios from 'axios'
 
 function TelaHistorico() {
   const {imagem} = useContext(UsuarioContext)
+  const { usuario } = useContext(UsuarioContext);
+  const [historico, setHistorico] = useState([])
+
+  function buscarHistorico() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${usuario}`,
+      },
+    };
+    const URL =
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily";
+
+    const promisse = axios.get(URL, config);
+
+    promisse.then((response) => {
+      const { data } = response;
+      setHistorico(data);
+    });
+
+    promisse.catch((err) => {
+      console.log(err.response);
+      console.log("fracasso");
+    });
+  }
+
+  useEffect(() => {
+    buscarHistorico();
+  }, []);
+
+  console.log('historico', historico)
+  
   return (
     <>
       <Container>
@@ -18,7 +50,28 @@ function TelaHistorico() {
         <Titulo>
           <h1>Historico</h1>
         </Titulo>
-        <SemHabitos>
+        {
+          historico.length !== 0 ? 
+          
+          historico.map((item) => { return (
+              <Item
+                key={item.day}
+              >
+                <Info>
+                  <h1>Dia: {item.day}</h1>
+                  {
+                    item.habits.map(habito => { return (
+                      <Habito key={habito.id}>
+                        <p>Nome do hábito: {habito.name}</p>
+                        <p>Feito: {habito.done ? "SIM" : "Não"} </p>
+                      </Habito>)
+                    })
+                  }
+                </Info>
+             </Item>)
+          })
+          : 
+          <SemHabitos>
           <Mensagem>
             <p>
               Você não tem nenhum hábito cadastrado ainda. Adicione um hábito
@@ -26,6 +79,8 @@ function TelaHistorico() {
             </p>
           </Mensagem>
         </SemHabitos>
+        }
+        
 
         <BarraInferior>
         <Link to="/habitos"><p>Hábitos</p></Link>
@@ -75,6 +130,7 @@ const Titulo = styled.section`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 50px;
 
   h1 {
     font-size: 23px;
@@ -84,14 +140,13 @@ const Titulo = styled.section`
 `;
 
 const SemHabitos = styled.section`
-  margin-top: 50px;
   margin-left: 18px;
   margin-right: 18px;
 `;
 
 const Mensagem = styled.article`
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 18px;
+  padding-right: 18px;
   background-color: #fff;
   width: 100%;
   height: 94px;
@@ -141,5 +196,45 @@ const Foto = styled.img`
   margin-top: 10px;
   margin-bottom: 10px;
 `;
+
+const Item = styled.section`
+  min-height: 94px;
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: 5px;
+  background-color: #fff; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+const Info = styled.div`
+  h1 {
+    font-size: 20px;
+    font-family: "Lexend Deca", sans-serif;
+    font-weight: 400;
+    color: #666;
+    padding-bottom: 8px;
+  }
+
+  p {
+    font-size: 13px;
+    font-family: "Lexend Deca", sans-serif;
+    font-weight: 400;
+    color: #666;
+    padding-bottom: 5px;
+  }
+`;
+
+const Habito = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  p{
+    padding-left: 10px;
+  }
+`
 
 export default TelaHistorico;
