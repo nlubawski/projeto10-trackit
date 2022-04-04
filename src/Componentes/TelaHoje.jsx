@@ -11,9 +11,9 @@ function TelaHoje() {
   const { usuario } = useContext(UsuarioContext);
   const { imagem } = useContext(UsuarioContext);
   let hoje = parseInt(dayjs().format("d"));
-  const [habitosHoje, setHabitosHoje] = useState([])
+  const [habitosHoje, setHabitosHoje] = useState([]);
 
-  useEffect(() => {
+  function buscarHabitoHoje(){
     const config = {
       headers: {
         Authorization: `Bearer ${usuario}`,
@@ -26,43 +26,65 @@ function TelaHoje() {
 
     promisse.then((response) => {
       const { data } = response;
-      setHabitosHoje(data)
-      console.log('habitos hoj',data)
+      setHabitosHoje(data);
+      console.log("habitos hoj", data);
     });
 
     promisse.catch((err) => {
       console.log(err.response);
       console.log("fracasso");
     });
+  }
+
+  useEffect(() => {
+    buscarHabitoHoje()
   }, []);
 
   function marcarHabito(id) {
-    
+    console.log("marcar habito id", id);
     const config = {
       headers: {
         Authorization: `Bearer ${usuario}`,
-      }
-    }
+      },
+    };
+    const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`;
 
-    const URL =
-    `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id.toString()}/check`
-
-    const promisse = axios.post(URL,config);
+    const promisse = axios.post(URL, null, config);
 
     promisse.then((response) => {
       console.log("resposta", response.data);
-      console.log("salvou o habito");
-
+      console.log("marcou o habito");
     });
 
     promisse.catch((err) => {
       console.log("erro", err);
-      console.log('erroooo', err.response);
-
+      console.log("erroooo", err.response);
     });
   }
 
-  console.log("habitos", habitos);
+  function desmarcarHabito(id) {
+    console.log("desmarcar habito id", id);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${usuario}`,
+      },
+    };
+    const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`;
+
+    const promisse = axios.post(URL, null, config);
+
+    promisse.then((response) => {
+      console.log("resposta", response.data);
+      console.log("desmarcou o habito");
+      buscarHabitoHoje()
+    });
+
+    promisse.catch((err) => {
+      console.log("erro", err);
+      console.log("erroooo", err.response);
+      buscarHabitoHoje()
+    });
+  }
 
   return (
     <>
@@ -79,25 +101,32 @@ function TelaHoje() {
         </Dia>
         <Tarefas>
           {habitosHoje.length !== 0 ? (
-           
-            
-            habitosHoje.map((item) => { 
-              console.log('habitosHoje item', habitosHoje.item)
-              return (
-         
-                 <Item key={item.id} onClick={() => marcarHabito(item.id)}>
-                  <Info >
+            habitosHoje.map((item) => {
+              return item.done === true ? (
+                <Item key={item.id} onClick={() => desmarcarHabito(item.id)}>
+                  <Info>
                     <h1>{item.name}</h1>
-                    <p>Sequência atual: 3 dias</p>
-                    <p>Seu recorde: 5 dias</p>
+                    <p>Sequência atual: {item.currentSequence} dias</p>
+                    <p>Seu recorde: {item.highestSequence} dias</p>
                   </Info>
-                  
-                    <CaixaIcone>
-                      <BsFillCheckSquareFill size={80} color={"gray"} />
-                    </CaixaIcone>
-                  </Item>
-              
-              ) 
+
+                  <CaixaIcone>
+                    <BsFillCheckSquareFill size={80} color={"gray"} />
+                  </CaixaIcone>
+                </Item>
+              ) : (
+                <Item key={item.id} onClick={() => marcarHabito(item.id)}>
+                  <Info>
+                    <h1>{item.name}</h1>
+                    <p>Sequência atual: {item.currentSequence} dias</p>
+                    <p>Seu recorde: {item.highestSequence} dias</p>
+                  </Info>
+
+                  <CaixaIcone>
+                    <BsFillCheckSquareFill size={80} color={"gray"} />
+                  </CaixaIcone>
+                </Item>
+              );
             })
           ) : (
             <></>
