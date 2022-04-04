@@ -74,7 +74,7 @@ function TelaHoje() {
     const promisse = axios.post(URL, null, config);
 
     promisse.then((response) => {
-      console.log("resposta", response.data);
+      console.log("resposta", response);
       console.log("desmarcou o habito");
       buscarHabitoHoje()
     });
@@ -111,7 +111,7 @@ function TelaHoje() {
                   </Info>
 
                   <CaixaIcone>
-                    <BsFillCheckSquareFill size={80} color={"gray"} />
+                    <BsFillCheckSquareFill size={80} color={"green"} />
                   </CaixaIcone>
                 </Item>
               ) : (

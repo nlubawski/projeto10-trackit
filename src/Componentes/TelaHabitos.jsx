@@ -5,7 +5,7 @@ import { TrashFill } from "@styled-icons/bootstrap/TrashFill";
 import UsuarioContext from "./contextos/UsuarioContext";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 function TelaHabitos() {
   const [habitos, setHabitos] = useState([]);
@@ -13,12 +13,12 @@ function TelaHabitos() {
   const [loading, setLoading] = useState(false);
   const [nomeHabito, setNomeHabito] = useState("");
   const [selecionado, setSelecionado] = useState([]);
-  const [atualiza, setAtualiza] = useState(false)
+  const [atualiza, setAtualiza] = useState(false);
   const { usuario } = useContext(UsuarioContext);
-  const {imagem} = useContext(UsuarioContext)
+  const { imagem } = useContext(UsuarioContext);
 
 
-  function buscarHabitos(){
+  function buscarHabitos() {
     const config = {
       headers: {
         Authorization: `Bearer ${usuario}`,
@@ -30,11 +30,7 @@ function TelaHabitos() {
     const promisse = axios.get(URL, config);
 
     promisse.then((response) => {
-      console.log("response", response);
-      console.log("data", response.data);
       const { data } = response;
-      console.log("sucesso");
-      console.log(data);
       setHabitos(data);
     });
 
@@ -45,8 +41,8 @@ function TelaHabitos() {
   }
 
   useEffect(() => {
-    buscarHabitos()}, [] );
- 
+    buscarHabitos();
+  }, []);
 
   function criarHabito() {
     setNovoHabito(!novoHabito);
@@ -55,14 +51,16 @@ function TelaHabitos() {
   function selecionar(num) {
     if (selecionado.includes(num)) {
       let indice = selecionado.indexOf(num);
-      console.log("indice", indice);
+
       let auxiliar = [...selecionado];
-      console.log("auxiliar", auxiliar);
+
       auxiliar.splice(indice, 1);
-      console.log("auxiliar pos splice", auxiliar);
+
       setSelecionado(auxiliar);
+
     } else {
       setSelecionado([...selecionado, num]);
+      
     }
   }
 
@@ -90,12 +88,9 @@ function TelaHabitos() {
     );
 
     promisse.then((response) => {
-      console.log("resposta", response.data);
-      console.log("salvou o habito");
       setLoading(false);
-      criarHabito()
-      buscarHabitos()
-      
+      criarHabito();
+      buscarHabitos();
     });
 
     promisse.catch((err) => {
@@ -115,23 +110,7 @@ function TelaHabitos() {
     6: "S",
   };
 
-  function listaDias() {
-    let lista = [];
-    for (let i = 0; i < 7; i++) {
-      selecionado.indexOf(i)
-        ? lista.push(
-            <Dia key={i} onClick={() => selecionar(i)}>
-              {dias.i}
-            </Dia>
-          )
-        : lista.push(
-            <Dia key={i} onClick={() => selecionar(i)}>
-              {dias.i}
-            </Dia>
-          );
-    }
-    return lista.sort();
-  }
+  const listaDias = [0, 1, 2, 3, 4, 5, 6];
 
   function apagarHabito(item) {
     let confirmacao = prompt("Quer mesmo apagar esse hábito? Digite Sim ");
@@ -142,15 +121,11 @@ function TelaHabitos() {
         },
       };
 
-      const URL =
-        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item}`;
-      const promisse = axios.delete(URL,config);
+      const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item}`;
+      const promisse = axios.delete(URL, config);
 
       promisse.then((response) => {
-        console.log("resposta", response.data);
-        console.log("apaggou o habito");
-        buscarHabitos()
-
+        buscarHabitos();
       });
 
       promisse.catch((err) => {
@@ -160,79 +135,92 @@ function TelaHabitos() {
     }
   }
 
-  console.log("habitis", habitos);
-
-  console.log("habitis", habitos);
   return habitos.length !== 0 ? (
     <>
       <Container>
         <BarraTopo>
           <p>TrackIt</p>
-          <Foto
-            src={imagem}
-            alt={imagem}
-          />
+          <Foto src={imagem} alt={imagem} />
         </BarraTopo>
         <Titulo>
           <h1>Meus Hábitos</h1>
           <AiFillPlusSquare size={30} color={"blue"} onClick={criarHabito} />
         </Titulo>
-        {console.log('to aqui',habitos.length)}
         <Tarefas>
-        {novoHabito ? (
-              <Cadastrar>
-                <Formulario onSubmit={salvarHabito}>
-                  <Input
-                    type="text"
-                    placeholder="Nome do Hábito"
-                    required
-                    value={nomeHabito}
-                    onChange={(e) => setNomeHabito(e.target.value)}
-                    disabled={loading ? true : false}
-                  />
-                  <Dias>{listaDias().map((item) => item)}</Dias>
-                  <Botoes>
-                    <Cancelar onClick={criarHabito}>Cancelar</Cancelar>
-                    <Salvar type="submit">
-                      {" "}
-                      {loading ? (
-                        <ThreeDots color="#fff" height={13} />
-                      ) : (
-                        "Salvar"
-                      )}
-                    </Salvar>
-                  </Botoes>
-                </Formulario>
-              </Cadastrar>
-            ) : (
-              <></>
-            )}
-          {habitos.length ? 
-          
-          habitos.map((item) => {
-            console.log('to aqui',habitos.length)
-            return (
-              <Item>
-                <Info>
-                  <Descricao>
-                    <h1>{item.name}</h1>
-                  </Descricao>
-                </Info>
-
-                <TrashFill
-                  onClick={() => apagarHabito(item.id)}
-                  size={22}
-                  color={"grey"}
+          {novoHabito ? (
+            <Cadastrar>
+              <Formulario onSubmit={salvarHabito}>
+                <Input
+                  type="text"
+                  placeholder="Nome do Hábito"
+                  required
+                  value={nomeHabito}
+                  onChange={(e) => setNomeHabito(e.target.value)}
+                  disabled={loading ? true : false}
                 />
-              </Item>
-            );
-          }): 
-          <></>}
+                <Dias>
+                  {listaDias.map((item) => {
+                    return selecionado.includes(item) ? (
+                      <Dia selecionado key={item} onClick={() => {
+                        selecionar(item)
+                      }}>
+                        {dias[item]}
+                      </Dia>
+                    ) : (
+                      <Dia key={item}  onClick={() => selecionar(item)}>
+                        {dias[item]}
+                      </Dia>
+                    );
+                  })}
+                </Dias>
+                <Botoes>
+                  <Cancelar onClick={criarHabito}>Cancelar</Cancelar>
+                  <Salvar type="submit">
+                    {" "}
+                    {loading ? (
+                      <ThreeDots color="#fff" height={13} />
+                    ) : (
+                      "Salvar"
+                    )}
+                  </Salvar>
+                </Botoes>
+              </Formulario>
+            </Cadastrar>
+          ) : (
+            <></>
+          )}
+          {habitos.length ? (
+            habitos.map((item) => {
+              return (
+                <Item>
+                  <Info>
+                    <Descricao>
+                      <h1>{item.name}</h1>
+                    </Descricao>
+                  </Info>
+
+                  <TrashFill
+                    onClick={() => apagarHabito(item.id)}
+                    size={22}
+                    color={"grey"}
+                  />
+                </Item>
+              );
+            })
+          ) : (
+            <></>
+          )}
         </Tarefas>
         <BarraInferior>
-        <Link to="/habitos"><p>Hábitos</p></Link>
-          <Link to="/hoje"><p>Hoje</p></Link>
-          <Link to="/historico"><p>Histórico</p></Link>
+          <Link to="/habitos">
+            <p>Hábitos</p>
+          </Link>
+          <Link to="/hoje">
+            <p>Hoje</p>
+          </Link>
+          <Link to="/historico">
+            <p>Histórico</p>
+          </Link>
         </BarraInferior>
       </Container>
     </>
@@ -241,10 +229,7 @@ function TelaHabitos() {
       <Container>
         <BarraTopo>
           <p>TrackIt</p>
-          <Foto
-            src={imagem}
-            alt={imagem}
-          />
+          <Foto src={imagem} alt={imagem} />
         </BarraTopo>
         <Titulo>
           <h1>Meus Hábitos</h1>
@@ -263,7 +248,23 @@ function TelaHabitos() {
                     onChange={(e) => setNomeHabito(e.target.value)}
                     disabled={loading ? true : false}
                   />
-                  <Dias>{listaDias().map((item) => item)}</Dias>
+                  <Dias>
+                    
+                  {/* {listaDias.map((item) => {
+                    console.log('dias item', dias[item])
+                    return selecionado.indexOf(item) ? (
+                      <Dia key={item} back={true} onClick={() => selecionar(item)}>
+                        {dias[item]}
+                      </Dia>
+                    ) : (
+                      <Dia key={item} back={false} onClick={() => selecionar(item)}>
+                        {dias[item]}
+                      </Dia>
+                    );
+                  })} */}
+                  
+                  
+                  </Dias>
                   <Botoes>
                     <Cancelar onClick={criarHabito}>Cancelar</Cancelar>
                     <Salvar type="submit">
@@ -517,7 +518,9 @@ const Dia = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 4px;
-`;
+  background-color: ${props => props.selecionado ? "#00ff00" :"#ff4400"};  
+  ` ;
+
 
 const Salvar = styled.button`
   height: 35px;
