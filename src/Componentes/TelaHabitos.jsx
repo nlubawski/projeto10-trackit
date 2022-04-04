@@ -6,6 +6,8 @@ import UsuarioContext from "./contextos/UsuarioContext";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
 import { Link } from "react-router-dom";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import 'react-circular-progressbar/dist/styles.css';
 
 function TelaHabitos() {
   const [habitos, setHabitos] = useState([]);
@@ -16,6 +18,7 @@ function TelaHabitos() {
   const [atualiza, setAtualiza] = useState(false);
   const { usuario } = useContext(UsuarioContext);
   const { imagem } = useContext(UsuarioContext);
+  const {porcentagem} = useContext(UsuarioContext)
 
 
   function buscarHabitos() {
@@ -36,7 +39,6 @@ function TelaHabitos() {
 
     promisse.catch((err) => {
       console.log(err.response);
-      console.log("fracasso");
     });
   }
 
@@ -94,8 +96,7 @@ function TelaHabitos() {
     });
 
     promisse.catch((err) => {
-      console.log("erro", err);
-      alert("errou pra salvar");
+      alert("não foi possível salvar seushábito, tente novamente");
       setLoading(false);
     });
   }
@@ -129,8 +130,7 @@ function TelaHabitos() {
       });
 
       promisse.catch((err) => {
-        console.log("erro", err);
-        alert("errou pra apagar");
+        alert("não foi possível apagar seu hábito, tente novamente");
       });
     }
   }
@@ -232,7 +232,21 @@ function TelaHabitos() {
             <p>Hábitos</p>
           </Link>
           <Link to="/hoje">
-            <p>Hoje</p>
+          <Progresso>
+            {console.log('porce', porcentagem*100)}
+          <CircularProgressbar
+                value={porcentagem*100} 
+                size={12}
+                text="Hoje"
+                background
+                backgroundPadding={6}
+                styles={buildStyles({
+                    backgroundColor: "#5cbcf0",
+                    textColor: "#fff",
+                    pathColor: "#fff",
+                    trailColor: "transparent",
+                })}
+            /></Progresso>
           </Link>
           <Link to="/historico">
             <p>Histórico</p>
@@ -308,7 +322,20 @@ function TelaHabitos() {
             <p>Hábitos</p>
           </Link>
           <Link to="/hoje">
-            <p>Hoje</p>
+          <Progresso>
+          <CircularProgressbar
+                value={porcentagem*100} 
+                size={12}
+                text="Hoje"
+                background
+                backgroundPadding={6}
+                styles={buildStyles({
+                    backgroundColor: "#5cbcf0",
+                    textColor: "#fff",
+                    pathColor: "#fff",
+                    trailColor: "transparent",
+                })}
+            /></Progresso>
           </Link>
           <Link to="/historico">
             <p>Histórico</p>
@@ -561,5 +588,11 @@ const Cancelar = styled.button`
   justify-content: center;
   align-items: center;
 `;
+
+const Progresso = styled.div`
+  width: 80px;
+  height: 80px;
+  margin-bottom: 40px;
+`
 
 export default TelaHabitos;

@@ -5,13 +5,16 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { BsFillCheckSquareFill } from "react-icons/bs";
 import UsuarioContext from "./contextos/UsuarioContext";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import 'react-circular-progressbar/dist/styles.css';
 
 function TelaHoje() {
   const [habitos, setHabitos] = useState([]);
   const { usuario } = useContext(UsuarioContext);
   const { imagem } = useContext(UsuarioContext);
-  let hoje = parseInt(dayjs().format("d"));
+  const {setPorcentagem} = useContext(UsuarioContext)
   const [habitosHoje, setHabitosHoje] = useState([]);
+  const hoje = parseInt(dayjs().format("d"));
 
   function buscarHabitoHoje() {
     const config = {
@@ -27,7 +30,8 @@ function TelaHoje() {
     promisse.then((response) => {
       const { data } = response;
       setHabitosHoje(data);
-      console.log("habitos hoj", data);
+      console.log("habitos hoj", data.length);
+      porcentagem(data)
     });
 
     promisse.catch((err) => {
@@ -39,6 +43,22 @@ function TelaHoje() {
   useEffect(() => {
     buscarHabitoHoje();
   }, []);
+
+  function porcentagem(dados){
+    const maximo = dados.length
+    const feitos = []
+    dados.forEach(item => {
+      if (item.done){
+        feitos.push(1)
+      }
+    })
+
+    if (feitos.length === 0){
+      setPorcentagem(0)
+    }else{
+      setPorcentagem(feitos.length/maximo)
+    }
+  }
 
   function marcarHabito(id) {
     const config = {
@@ -160,7 +180,20 @@ function TelaHoje() {
             <p>Hábitos</p>
           </Link>
           <Link to="/hoje">
-            <p>Hoje</p>
+          <Progresso>
+          <CircularProgressbar
+                value={0.24*100} 
+                size={12}
+                text="Hoje"
+                background
+                backgroundPadding={6}
+                styles={buildStyles({
+                    backgroundColor: "#5cbcf0",
+                    textColor: "#fff",
+                    pathColor: "#fff",
+                    trailColor: "transparent",
+                })}
+            /></Progresso>
           </Link>
           <Link to="/historico">
             <p>Histórico</p>
@@ -295,5 +328,11 @@ const Foto = styled.img`
   margin-top: 10px;
   margin-bottom: 10px;
 `;
+
+const Progresso = styled.div`
+  width: 80px;
+  height: 80px;
+  margin-bottom: 40px;
+`
 
 export default TelaHoje;

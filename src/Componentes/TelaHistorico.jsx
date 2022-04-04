@@ -1,13 +1,16 @@
-import {useContext, useEffect, useState} from 'react'
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import {Link} from 'react-router-dom'
-import UsuarioContext from './contextos/UsuarioContext'
-import axios from 'axios'
+import { Link } from "react-router-dom";
+import UsuarioContext from "./contextos/UsuarioContext";
+import axios from "axios";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import 'react-circular-progressbar/dist/styles.css';
 
 function TelaHistorico() {
-  const {imagem} = useContext(UsuarioContext)
+  const { imagem } = useContext(UsuarioContext);
   const { usuario } = useContext(UsuarioContext);
-  const [historico, setHistorico] = useState([])
+  const {porcentagem} = useContext(UsuarioContext)
+  const [historico, setHistorico] = useState([]);
 
   function buscarHistorico() {
     const config = {
@@ -35,57 +38,70 @@ function TelaHistorico() {
     buscarHistorico();
   }, []);
 
-  console.log('historico', historico)
-  
+  console.log("historico", historico);
+
   return (
     <>
       <Container>
         <BarraTopo>
           <p>TrackIt</p>
-          <Foto
-            src= {imagem}
-            alt={imagem}
-          />
+          <Foto src={imagem} alt={imagem} />
         </BarraTopo>
         <Titulo>
           <h1>Historico</h1>
         </Titulo>
-        {
-          historico.length !== 0 ? 
-          
-          historico.map((item) => { return (
-              <Item
-                key={item.day}
-              >
+        {historico.length !== 0 ? (
+          historico.map((item) => {
+            return (
+              <Item key={item.day}>
                 <Info>
                   <h1>Dia: {item.day}</h1>
-                  {
-                    item.habits.map(habito => { return (
+                  {item.habits.map((habito) => {
+                    return (
                       <Habito key={habito.id}>
                         <p>Nome do hábito: {habito.name}</p>
                         <p>Feito: {habito.done ? "SIM" : "Não"} </p>
-                      </Habito>)
-                    })
-                  }
+                      </Habito>
+                    );
+                  })}
                 </Info>
-             </Item>)
+              </Item>
+            );
           })
-          : 
+        ) : (
           <SemHabitos>
-          <Mensagem>
-            <p>
-              Você não tem nenhum hábito cadastrado ainda. Adicione um hábito
-              para começar a trackear!
-            </p>
-          </Mensagem>
-        </SemHabitos>
-        }
-        
+            <Mensagem>
+              <p>
+                Você não tem nenhum hábito cadastrado ainda. Adicione um hábito
+                para começar a trackear!
+              </p>
+            </Mensagem>
+          </SemHabitos>
+        )}
 
         <BarraInferior>
-        <Link to="/habitos"><p>Hábitos</p></Link>
-          <Link to="/hoje"><p>Hoje</p></Link>
-          <Link to="/historico"><p>Histórico</p></Link>
+          <Link to="/habitos">
+            <p>Hábitos</p>
+          </Link>
+          <Link to="/hoje">
+          <Progresso>
+          <CircularProgressbar
+                value={porcentagem*100} 
+                size={12}
+                text="Hoje"
+                background
+                backgroundPadding={6}
+                styles={buildStyles({
+                    backgroundColor: "#5cbcf0",
+                    textColor: "#fff",
+                    pathColor: "#fff",
+                    trailColor: "transparent",
+                })}
+            /></Progresso>
+          </Link>
+          <Link to="/historico">
+            <p>Histórico</p>
+          </Link>
         </BarraInferior>
       </Container>
     </>
@@ -202,7 +218,7 @@ const Item = styled.section`
   margin-left: 12px;
   margin-right: 12px;
   border-radius: 5px;
-  background-color: #fff; 
+  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -232,9 +248,15 @@ const Habito = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  p{
+  p {
     padding-left: 10px;
   }
+`;
+
+const Progresso = styled.div`
+  width: 80px;
+  height: 80px;
+  margin-bottom: 40px;
 `
 
 export default TelaHistorico;

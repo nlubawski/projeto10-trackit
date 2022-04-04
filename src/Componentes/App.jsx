@@ -12,10 +12,11 @@ import UsuarioContext from './contextos/UsuarioContext'
 function App(){
     const [usuario, setUsuario] = useState({})
     const [imagem, setImagem] = useState("")
+    const [porcentagem, setPorcentagem] = useState(0); 
     return (
         <>
         <GlobalStyle />
-        <UsuarioContext.Provider  value={{usuario, setUsuario, imagem, setImagem}} >
+        <UsuarioContext.Provider  value={{usuario, setUsuario, imagem, setImagem, porcentagem, setPorcentagem}} >
         <BrowserRouter>
         <Routes>
             <Route path='/' element={<TelaInicial />} />
